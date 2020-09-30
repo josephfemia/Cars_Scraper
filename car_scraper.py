@@ -18,32 +18,7 @@ driver.get(url)
 
 content = driver.page_source
 soup = BeautifulSoup(content, 'html.parser')
-#print(soup.prettify())
 
-# print(soup.findAll('h2', class_="listing-row__title"))
-# print(soup.findAll('span', class_="listing-row__mileage"))
-# print(soup.findAll('span', class_="listing-row__price"))
-# print(soup.find('a', class_ = "shop-srp-listings__listing").get('href'))
-
-# Used to store the listing name
-# for a in soup.findAll('h2', class_='listing-row__title'):
-#     name = str(a.text).strip()
-#     car_name.append(name)
-
-# Used to store the listing mileage
-# for a in soup.findAll('span', class_='listing-row__mileage'):
-#     mi = str(a.text).strip().replace('.','')
-#     miles.append(mi)
-
-# Used to store the listing price
-# for a in soup.findAll('span', class_='listing-row__price'):
-#     cost = str(a.text).strip()
-#     price.append(cost)
-
-# Used to store the listing url
-# for a in soup.findAll('a', class_ = "shop-srp-listings__listing"):
-#     link = "cars.com" + a.get('href')
-#     url.append(link)
 
 # Used to store the page numbers in a list
 for a in soup.findAll('ul', class_ = "page-list"):
@@ -94,9 +69,5 @@ for pg in pages:
             link = 'N/A'
         url_list.append(link)
 
-print(car_name)
-print(miles)
-print(price)
-print(url_list)
-# df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
-# df.to_csv('car_data.csv', index=False, encoding='utf-8')
+df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
+df.to_csv('car_data.csv', index=False, encoding='utf-8')
