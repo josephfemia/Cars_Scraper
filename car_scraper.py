@@ -18,7 +18,7 @@ soup = BeautifulSoup(content, 'html.parser')
 # print(soup.findAll('h2', class_="listing-row__title"))
 # print(soup.findAll('span', class_="listing-row__mileage"))
 # print(soup.findAll('span', class_="listing-row__price"))
-# print(soup.find(class_ = "shop-srp-listings__listing"))
+# print(soup.find('a', class_ = "shop-srp-listings__listing").get('href'))
 
 # Used to store the listing name
 for a in soup.findAll('h2', class_='listing-row__title'):
@@ -34,6 +34,11 @@ for a in soup.findAll('span', class_='listing-row__mileage'):
 for a in soup.findAll('span', class_='listing-row__price'):
     cost = str(a.text).strip()
     price.append(cost)
+
+# Used to store the listing url
+for a in soup.findAll('a', class_ = "shop-srp-listings__listing"):
+    link = "cars.com" + a.get('href')
+    url.append(link)
 
 # df = pd.DataFrame({'Product Name':products,'Price':prices,'Rating':ratings})
 # df.to_csv('products.csv', index=False, encoding='utf-8')
