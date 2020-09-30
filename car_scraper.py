@@ -73,5 +73,5 @@ for a in soup.findAll(class_ = "shop-srp-listings__listing-container"):
         link = 'N/A'
     url.append(link)
 
-# df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
-# df.to_csv('products.csv', index=False, encoding='utf-8')
+df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
+df.to_csv('car_data.csv', index=False, encoding='utf-8')
