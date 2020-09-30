@@ -69,5 +69,5 @@ for pg in pages:
             link = 'N/A'
         url_list.append(link)
 
-df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
+df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
