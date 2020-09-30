@@ -18,19 +18,13 @@ soup = BeautifulSoup(content, 'html.parser')
 # print(soup.findAll('h2', class_="listing-row__title"))
 # print(soup.findAll('span', class_="listing-row__mileage"))
 # print(soup.findAll('span', class_="listing-row__price"))
-print(soup.find(class_ = "shop-srp-listings__listing"))
+# print(soup.find(class_ = "shop-srp-listings__listing"))
 
+# Used to store the listing name
+for a in soup.findAll('h2', class_='listing-row__title'):
+    name = str(a.text).strip()
+    products.append(name)
 
-# for a in soup.findAll('h2', class_='listing-row__title'):
-#     name = str(a.text)
-    # price=a.find('div', attrs={'class':'snapshot__body-content snapshot__details-price'})
-    # rating=a.find('div', attrs={'class':'snapshot__details-miles item-value'})
-    # products.append(name.text)
-    # prices.append(price.text)
-    # ratings.append(rating.text)
-    # print(name)
-    # print(price)
-    # print(rating)
 
 # df = pd.DataFrame({'Product Name':products,'Price':prices,'Rating':ratings})
 # df.to_csv('products.csv', index=False, encoding='utf-8')
