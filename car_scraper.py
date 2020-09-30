@@ -12,7 +12,7 @@ pages=[] #List to store number of pages in search
 
 # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
 # url = input('Please enter the link you would like to scrape:\n')
-url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
+url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=5&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get(url)
 
@@ -63,7 +63,7 @@ for pg in pages:
 
 
         # Used to see if that listing has a url otherwise store it as N/A
-        if('\"listing-row__price\"' in str(a)):
+        if('\"shop-srp-listings__listing\"' in str(a)):
             link = 'cars.com' + a.find('a', class_ = 'shop-srp-listings__listing').get('href')
         else:
             link = 'N/A'
