@@ -30,5 +30,10 @@ for a in soup.findAll('span', class_='listing-row__mileage'):
     mi = str(a.text).strip().replace('.','')
     miles.append(mi)
 
+# Used to store the listing price
+for a in soup.findAll('span', class_='listing-row__price'):
+    cost = str(a.text).strip()
+    price.append(cost)
+
 # df = pd.DataFrame({'Product Name':products,'Price':prices,'Rating':ratings})
 # df.to_csv('products.csv', index=False, encoding='utf-8')
