@@ -9,6 +9,8 @@ car_name=[] #List to store car name of the product
 price=[] #List to store price of the product
 miles=[] #List to store miles of the product
 url=[] #List to store url of the product
+pages=[] #List to store number of pages in search
+
 driver.get("https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&rd=99999&searchSource=QUICK_FORM&zc=80011")
 
 content = driver.page_source
@@ -39,6 +41,13 @@ soup = BeautifulSoup(content, 'html.parser')
 # for a in soup.findAll('a', class_ = "shop-srp-listings__listing"):
 #     link = "cars.com" + a.get('href')
 #     url.append(link)
+
+# Used to store the page numbers in a list
+for a in soup.findAll('ul', class_ = "page-list"):
+    for b in a.findAll('a'):
+        page = b.get('data-page')
+        pages.append(page)
+
 
 # Used to populate the lists
 for a in soup.findAll(class_ = "shop-srp-listings__listing-container"):
