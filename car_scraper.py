@@ -23,7 +23,7 @@ soup = BeautifulSoup(content, 'html.parser')
 # Used to store the listing name
 for a in soup.findAll('h2', class_='listing-row__title'):
     name = str(a.text).strip()
-    products.append(name)
+    car_name.append(name)
 
 
 # df = pd.DataFrame({'Product Name':products,'Price':prices,'Rating':ratings})
