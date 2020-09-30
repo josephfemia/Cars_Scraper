@@ -21,24 +21,57 @@ soup = BeautifulSoup(content, 'html.parser')
 # print(soup.find('a', class_ = "shop-srp-listings__listing").get('href'))
 
 # Used to store the listing name
-for a in soup.findAll('h2', class_='listing-row__title'):
-    name = str(a.text).strip()
-    car_name.append(name)
+# for a in soup.findAll('h2', class_='listing-row__title'):
+#     name = str(a.text).strip()
+#     car_name.append(name)
 
 # Used to store the listing mileage
-for a in soup.findAll('span', class_='listing-row__mileage'):
-    mi = str(a.text).strip().replace('.','')
-    miles.append(mi)
+# for a in soup.findAll('span', class_='listing-row__mileage'):
+#     mi = str(a.text).strip().replace('.','')
+#     miles.append(mi)
 
 # Used to store the listing price
-for a in soup.findAll('span', class_='listing-row__price'):
-    cost = str(a.text).strip()
-    price.append(cost)
+# for a in soup.findAll('span', class_='listing-row__price'):
+#     cost = str(a.text).strip()
+#     price.append(cost)
 
 # Used to store the listing url
-for a in soup.findAll('a', class_ = "shop-srp-listings__listing"):
-    link = "cars.com" + a.get('href')
+# for a in soup.findAll('a', class_ = "shop-srp-listings__listing"):
+#     link = "cars.com" + a.get('href')
+#     url.append(link)
+
+# Used to populate the lists
+for a in soup.findAll(class_ = "shop-srp-listings__listing-container"):
+    # Used to see if that listing has a name otherwise store it as N/A
+    if('\"listing-row__title\"' in str(a)):
+        name = str(a.find('h2', class_ = 'listing-row__title').text).strip()
+    else:
+        name = 'N/A'
+    car_name.append(name)
+
+
+    # Used to see if that listing has a mileage listed otherwise store it as N/A
+    if('\"listing-row__mileage\"' in str(a)):
+        mi = str(a.find('span', class_ = 'listing-row__mileage').text).strip().replace('.', '')
+    else:
+        mi = 'N/A'
+    miles.append(mi)
+
+
+    # Used to see if that listing has a price listed otherwise store it as N/A
+    if('\"listing-row__price\"' in str(a)):
+        cost = str(a.find('span', class_ = 'listing-row__price').text).strip()
+    else:
+        cost = 'N/A'
+    price.append(cost)
+
+
+    # Used to see if that listing has a url otherwise store it as N/A
+    if('\"listing-row__price\"' in str(a)):
+        link = 'cars.com' + a.find('a', class_ = 'shop-srp-listings__listing').get('href')
+    else:
+        link = 'N/A'
     url.append(link)
 
-# df = pd.DataFrame({'Product Name':products,'Price':prices,'Rating':ratings})
+# df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url})
 # df.to_csv('products.csv', index=False, encoding='utf-8')
