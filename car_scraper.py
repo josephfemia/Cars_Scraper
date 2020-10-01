@@ -17,7 +17,7 @@ model_checked=[] #List to store the car models that are filtered for
 
 # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
 # url = input('Please enter the link you would like to scrape:\n')
-url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
+url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758%2C56867&mkId=20014%2C20069&page=1&perPage=20&rd=99999&searchSource=GN_REFINEMENT&sort=relevance&yrId=30031936%2C35797618%2C36362520%2C36620293&zc=80011'
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get(url)
 
@@ -88,11 +88,19 @@ for a in soup.findAll('li', class_ = "checkbox shortlist"):
         if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'make'):
             make = str(a.find('label', class_ = "checkbox__label").text).strip()
             make_checked.append(make)
+        if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'model'):
+            model = str(a.find('label', class_ = "checkbox__label").text).strip()
+            model_checked.append(model)
 
 for car in car_name:
     for make in make_checked:
         if(make in car):
             makes.append(make)
 
-df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Price':price,'Mileage':miles, 'Link':url_list})
+for car in car_name:
+    for model in model_checked:
+        if(model in car):
+            models.append(model)
+
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles, 'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
