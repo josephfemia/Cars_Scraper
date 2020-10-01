@@ -22,7 +22,7 @@ seller=[] #List to store the name of the seller
 
 # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
 # url = input('Please enter the link you would like to scrape:\n')
-url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758%2C56867&mkId=20014%2C20069&page=1&perPage=20&rd=99999&searchSource=GN_REFINEMENT&sort=relevance&yrId=30031936%2C35797618%2C36362520%2C36620293&zc=80011'
+url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&rd=99999&searchSource=QUICK_FORM&zc=80011'
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get(url)
 
@@ -88,12 +88,13 @@ for pg in pages:
         url_list.append(link)
 
 
-        # Used to store the exterior color 
+        # Used to store the meta data
         if('\"listing-row__meta\"' in str(a)):
             meta_data = str(a.find('ul', class_ = "listing-row__meta").text).strip()
             ext_clr = meta_data.replace("  ","").splitlines()[2]
-
+            int_clr = meta_data.replace("  ","").splitlines()[7]
         exterior_color.append(ext_clr)
+        interior_color.append(int_clr)
 
 for a in soup.findAll('li', class_ = "checkbox shortlist"):
     if('\"checked\"' in str(a)):
@@ -114,5 +115,5 @@ for car in car_name:
         if(model in car):
             models.append(model)
 
-df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Link':url_list})
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
