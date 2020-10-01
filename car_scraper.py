@@ -23,7 +23,9 @@ drivetrains=[] #List to store the drivetrain type
 sellers=[] #List to store the name of the seller
 
 makelist=[] #List to store all possible makes
+makelist_title=[] #List that stores all possible makes with a title format
 modellist=[] #List to store all possible models
+modellist_title=[] #List that stores all possible makes with a title format
 
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get('https://www.cars.com')
@@ -33,10 +35,13 @@ soup = BeautifulSoup(content, 'html.parser')
 
 for a in soup.findAll('select', {'name' : 'makeId'}):
     for b in a.findAll('option'):
-        makelist.append(str(b.text).title())
+        makelist.append(str(b.text))
+        makelist_title.append(str(b.text).title())
 
-print("The list of makes are {}".format(makelist))
+print("The list of makes are {}".format(makelist_title))
 user_make = input('Please type a make from the list above:\n').title()
+user_make = makelist[makelist_title.index(user_make)]
+make_id = soup.find('option', text = user_make).get('value')
 drpMake = Select(driver.find_element_by_name('makeId'))
 drpMake.select_by_visible_text(user_make)
 
@@ -45,10 +50,13 @@ soup = BeautifulSoup(content, 'html.parser')
 
 for a in soup.findAll('select', {'name' : 'modelId'}):
     for b in a.findAll('option'):
-        modellist.append(str(b.text).title())
+        modellist.append(str(b.text))
+        modellist_title.append(str(b.text).title())
 
-print("The list of models are {}".format(modellist))
+print("The list of models are {}".format(modellist_title))
 user_model = input('Please type a model from the list above:\n').title()
+user_make = modellist[modellist_title.index(user_model)]
+model_id = soup.find('option', text = user_model).get('value')
 drpModel = Select(driver.find_element_by_name('modelId'))
 drpModel.select_by_visible_text(user_model)
 
@@ -62,118 +70,112 @@ zipcode.send_keys('80011')
 driver.find_element_by_class_name('NZE2g').click()
 time.sleep(1)
 
-print(driver.current_url)
-time.sleep(20)
-# # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
-# # url = input('Please enter the link you would like to scrape:\n')
-# url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&rd=99999&searchSource=QUICK_FORM&zc=80011'
-# driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
-# driver.get(url)
-#
-# content = driver.page_source
-# soup = BeautifulSoup(content, 'html.parser')
-#
-#
-# # Used to store the page numbers in a list
-# for a in soup.findAll('ul', class_ = "page-list"):
-#     for b in a.findAll('a'):
-#         page = b.get('data-page')
-#         pages.append(page)
-#
-# # Scrolls thru all pages and stores the information
-# for pg in pages:
-#     driver.get(url.replace("page=1", "page=" + pg))
-#     time.sleep(1)
-#
-#     content = driver.page_source
-#     soup = BeautifulSoup(content, 'html.parser')
-#
-#     # Used to populate the lists
-#     for a in soup.findAll(class_ = "shop-srp-listings__listing-container"):
-#         # Used to see if that listing has a name otherwise store it as N/A
-#         if('\"listing-row__title\"' in str(a)):
-#             name = str(a.find('h2', class_ = 'listing-row__title').text).strip()
-#         else:
-#             name = 'N/A'
-#
-#         if name != 'N/A':
-#             year = name[:4]
-#             name = name[5:]
-#         else:
-#             year = 'N/A'
-#
-#         years.append(year)
-#         car_name.append(name)
-#
-#
-#         # Used to see if that listing has a mileage listed otherwise store it as N/A
-#         if('\"listing-row__mileage\"' in str(a)):
-#             mi = str(a.find('span', class_ = 'listing-row__mileage').text).strip().replace('.', '')
-#         else:
-#             mi = 'N/A'
-#         miles.append(mi)
-#
-#
-#         # Used to see if that listing has a price listed otherwise store it as N/A
-#         if('\"listing-row__price\"' in str(a)):
-#             cost = str(a.find('span', class_ = 'listing-row__price').text).strip()
-#             if cost == 'Not Priced':
-#                 cost = 'N/A'
-#         else:
-#             cost = 'N/A'
-#         price.append(cost)
-#
-#
-#         # Used to see if that listing has a url otherwise store it as N/A
-#         if('\"shop-srp-listings__listing\"' in str(a)):
-#             link = 'cars.com' + a.find('a', class_ = 'shop-srp-listings__listing').get('href')
-#         else:
-#             link = 'N/A'
-#         url_list.append(link)
-#
-#
-#         # Used to store the meta data
-#         if('\"listing-row__meta\"' in str(a)):
-#             meta_data = str(a.find('ul', class_ = "listing-row__meta").text).strip()
-#             ext_clr = meta_data.replace("  ","").splitlines()[2]
-#             int_clr = meta_data.replace("  ","").splitlines()[7]
-#             transmission = meta_data.replace("  ","").splitlines()[12]
-#             drivetrain = meta_data.replace("  ","").splitlines()[17]
-#         exterior_color.append(ext_clr)
-#         interior_color.append(int_clr)
-#         transmissions.append(transmission)
-#         drivetrains.append(drivetrain)
-#
-#
-#         # Used to store the seller otherwise store it as N/A
-#         if('\"dealer-name\"' in str(a)):
-#             seller = str(a.find('div', class_ = 'dealer-name').text).strip().splitlines()[0]
-#         else:
-#             seller = 'N/A'
-#         sellers.append(seller)
-#
-# for a in soup.findAll('li', class_ = "checkbox shortlist"):
-#     if('\"checked\"' in str(a)):
-#         if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'make'):
-#             make = str(a.find('label', class_ = "checkbox__label").text).strip()
-#             make_checked.append(make)
-#         if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'model'):
-#             model = str(a.find('label', class_ = "checkbox__label").text).strip()
-#             model_checked.append(model)
-#
-# for car in car_name:
-#     for make in make_checked:
-#         if(make in car):
-#             makes.append(make)
-#
-# for car in car_name:
-#     for model in model_checked:
-#         if(model in car):
-#             models.append(model)
-#
-#
-# df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,\
-# 'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,\
-# 'Transmission':transmissions,'Drivetrain':drivetrains,'Seller':sellers,'Link':url_list})
-#
-# df.to_csv('car_data.csv', index=False, encoding='utf-8')
+content = driver.page_source
+soup = BeautifulSoup(content, 'html.parser')
+
+
+# Used to store the page numbers in a list
+for a in soup.findAll('ul', class_ = "page-list"):
+    for b in a.findAll('a'):
+        page = str(b.get('data-page'))
+        pages.append(page)
+
+
+# Scrolls thru all pages and stores the information
+for pg in pages:
+    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
+    driver.get(dev_url)
+    time.sleep(1)
+
+    content = driver.page_source
+    soup = BeautifulSoup(content, 'html.parser')
+
+    # Used to populate the lists
+    for a in soup.findAll(class_ = "shop-srp-listings__listing-container"):
+        # Used to see if that listing has a name otherwise store it as N/A
+        if('\"listing-row__title\"' in str(a)):
+            name = str(a.find('h2', class_ = 'listing-row__title').text).strip()
+        else:
+            name = 'N/A'
+
+        if name != 'N/A':
+            year = name[:4]
+            name = name[5:]
+        else:
+            year = 'N/A'
+
+        years.append(year)
+        car_name.append(name)
+
+
+        # Used to see if that listing has a mileage listed otherwise store it as N/A
+        if('\"listing-row__mileage\"' in str(a)):
+            mi = str(a.find('span', class_ = 'listing-row__mileage').text).strip().replace('.', '')
+        else:
+            mi = 'N/A'
+        miles.append(mi)
+
+
+        # Used to see if that listing has a price listed otherwise store it as N/A
+        if('\"listing-row__price\"' in str(a)):
+            cost = str(a.find('span', class_ = 'listing-row__price').text).strip()
+            if cost == 'Not Priced':
+                cost = 'N/A'
+        else:
+            cost = 'N/A'
+        price.append(cost)
+
+
+        # Used to see if that listing has a url otherwise store it as N/A
+        if('\"shop-srp-listings__listing\"' in str(a)):
+            link = 'cars.com' + a.find('a', class_ = 'shop-srp-listings__listing').get('href')
+        else:
+            link = 'N/A'
+        url_list.append(link)
+
+
+        # Used to store the meta data
+        if('\"listing-row__meta\"' in str(a)):
+            meta_data = str(a.find('ul', class_ = "listing-row__meta").text).strip()
+            ext_clr = meta_data.replace("  ","").splitlines()[2]
+            int_clr = meta_data.replace("  ","").splitlines()[7]
+            transmission = meta_data.replace("  ","").splitlines()[12]
+            drivetrain = meta_data.replace("  ","").splitlines()[17]
+        exterior_color.append(ext_clr)
+        interior_color.append(int_clr)
+        transmissions.append(transmission)
+        drivetrains.append(drivetrain)
+
+
+        # Used to store the seller otherwise store it as N/A
+        if('\"dealer-name\"' in str(a)):
+            seller = str(a.find('div', class_ = 'dealer-name').text).strip().splitlines()[0]
+        else:
+            seller = 'N/A'
+        sellers.append(seller)
+
+for a in soup.findAll('li', class_ = "checkbox shortlist"):
+    if('\"checked\"' in str(a)):
+        if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'make'):
+            make = str(a.find('label', class_ = "checkbox__label").text).strip()
+            make_checked.append(make)
+        if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'model'):
+            model = str(a.find('label', class_ = "checkbox__label").text).strip()
+            model_checked.append(model)
+
+for car in car_name:
+    for make in make_checked:
+        if(make in car):
+            makes.append(make)
+
+for car in car_name:
+    for model in model_checked:
+        if(model in car):
+            models.append(model)
+
+
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,\
+'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,\
+'Transmission':transmissions,'Drivetrain':drivetrains,'Seller':sellers,'Link':url_list})
+
+df.to_csv('car_data.csv', index=False, encoding='utf-8')
