@@ -14,6 +14,11 @@ makes=[] #List to store the car make
 make_checked=[] #List to store the car makes that are filtered for
 models=[] #List to store the car model
 model_checked=[] #List to store the car models that are filtered for
+exterior_color=[] #List to store the exterior color of the car
+interior_color=[] #List to store the inerior color of the car
+transmission=[] #List to store the transmission type
+drivetrain=[] #List to store the drivetrain type
+seller=[] #List to store the name of the seller
 
 # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
 # url = input('Please enter the link you would like to scrape:\n')
@@ -83,6 +88,13 @@ for pg in pages:
         url_list.append(link)
 
 
+        # Used to store the exterior color 
+        if('\"listing-row__meta\"' in str(a)):
+            meta_data = str(a.find('ul', class_ = "listing-row__meta").text).strip()
+            ext_clr = meta_data.replace("  ","").splitlines()[2]
+
+        exterior_color.append(ext_clr)
+
 for a in soup.findAll('li', class_ = "checkbox shortlist"):
     if('\"checked\"' in str(a)):
         if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'make'):
@@ -102,5 +114,5 @@ for car in car_name:
         if(model in car):
             models.append(model)
 
-df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles, 'Link':url_list})
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
