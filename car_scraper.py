@@ -9,10 +9,11 @@ price=[] #List to store price of the product
 miles=[] #List to store miles of the product
 url_list=[] #List to store url of the product
 pages=[] #List to store number of pages in search
+years=[] #List to store car year
 
 # Test Url: https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011
 # url = input('Please enter the link you would like to scrape:\n')
-url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=5&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
+url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=36302758&mkId=20014&page=1&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get(url)
 
@@ -41,6 +42,14 @@ for pg in pages:
             name = str(a.find('h2', class_ = 'listing-row__title').text).strip()
         else:
             name = 'N/A'
+
+        if name != 'N/A':
+            year = name[:4]
+            name = name[5:]
+        else:
+            year = 'N/A'
+
+        years.append(year)
         car_name.append(name)
 
 
@@ -69,5 +78,5 @@ for pg in pages:
             link = 'N/A'
         url_list.append(link)
 
-df = pd.DataFrame({'Car Name':car_name,'Price':price,'Mileage':miles, 'Link':url_list})
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Price':price,'Mileage':miles, 'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
