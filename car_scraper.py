@@ -12,10 +12,12 @@ miles=[] #List to store miles of the product
 url_list=[] #List to store url of the product
 pages=[] #List to store number of pages in search
 years=[] #List to store car year
+
 makes=[] #List to store the car make
 make_checked=[] #List to store the car makes that are filtered for
 models=[] #List to store the car model
 model_checked=[] #List to store the car models that are filtered for
+
 exterior_color=[] #List to store the exterior color of the car
 interior_color=[] #List to store the inerior color of the car
 transmissions=[] #List to store the transmission type
@@ -27,12 +29,15 @@ makelist_title=[] #List that stores all possible makes with a title format
 modellist=[] #List to store all possible models
 modellist_title=[] #List that stores all possible makes with a title format
 
+year_filter=[] #List that stores all possible years to filter by
+
 driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
 driver.get('https://www.cars.com')
 time.sleep(1)
 content = driver.page_source
 soup = BeautifulSoup(content, 'html.parser')
 
+# Stores all of the possible makes
 for a in soup.findAll('select', {'name' : 'makeId'}):
     for b in a.findAll('option'):
         makelist.append(str(b.text))
@@ -48,6 +53,7 @@ drpMake.select_by_visible_text(user_make)
 content = driver.page_source
 soup = BeautifulSoup(content, 'html.parser')
 
+# Stores all of the possible models for that specific make
 for a in soup.findAll('select', {'name' : 'modelId'}):
     for b in a.findAll('option'):
         modellist.append(str(b.text))
@@ -69,10 +75,29 @@ zipcode.send_keys('80011')
 
 driver.find_element_by_class_name('NZE2g').click()
 time.sleep(1)
-
 content = driver.page_source
 soup = BeautifulSoup(content, 'html.parser')
 
+# Stores all possible years to filter by
+for a in soup.findAll('select', {"name" : "yrId"}):
+    for b in a.findAll('option'):
+        if b.text not in year_filter:
+            year_filter.append(str(b.text))
+
+
+print("The list of possible years to filter by are {}".format(year_filter))
+user_min_year = input('Please select a minimum year from the list above:\n').title()
+user_max_year = input('Please select a maximum year from the list above:\n').title()
+min_year_id = soup.find('option', text = user_min_year).get('value')
+max_year_id = soup.find('option', text = user_max_year).get('value')
+drpYearMin = Select(driver.find_element_by_xpath('//*[@id="yearRange"]/div[3]/div/div[1]/div/select'))
+drpYearMin.select_by_visible_text(user_min_year)
+drpYearMax = Select(driver.find_element_by_xpath('//*[@id="yearRange"]/div[3]/div/div[3]/div/select'))
+drpYearMax.select_by_visible_text(user_max_year)
+
+time.sleep(1)
+content = driver.page_source
+soup = BeautifulSoup(content, 'html.parser')
 
 # Used to store the page numbers in a list
 for a in soup.findAll('ul', class_ = "page-list"):
@@ -80,12 +105,10 @@ for a in soup.findAll('ul', class_ = "page-list"):
         page = str(b.get('data-page'))
         pages.append(page)
 
-
 # Scrolls thru all pages and stores the information
 for pg in pages:
-    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&zc=80011'
+    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&yrId=' + min_year_id + '%2C' + max_year_id + '&zc=80011'
     driver.get(dev_url)
-    time.sleep(1)
 
     content = driver.page_source
     soup = BeautifulSoup(content, 'html.parser')
