@@ -94,9 +94,11 @@ for pg in pages:
             ext_clr = meta_data.replace("  ","").splitlines()[2]
             int_clr = meta_data.replace("  ","").splitlines()[7]
             transmission = meta_data.replace("  ","").splitlines()[12]
+            drivetrain = meta_data.replace("  ","").splitlines()[17]
         exterior_color.append(ext_clr)
         interior_color.append(int_clr)
         transmissions.append(transmission)
+        drivetrains.append(drivetrain)
 
 for a in soup.findAll('li', class_ = "checkbox shortlist"):
     if('\"checked\"' in str(a)):
@@ -117,5 +119,5 @@ for car in car_name:
         if(model in car):
             models.append(model)
 
-df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,'Transmission':transmissions,'Link':url_list})
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,'Transmission':transmissions,'Drivetrain':drivetrains,'Link':url_list})
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
