@@ -100,6 +100,14 @@ for pg in pages:
         transmissions.append(transmission)
         drivetrains.append(drivetrain)
 
+
+        # Used to store the seller otherwise store it as N/A
+        if('\"dealer-name\"' in str(a)):
+            seller = str(a.find('div', class_ = 'dealer-name').text).strip().splitlines()[0]
+        else:
+            seller = 'N/A'
+        sellers.append(seller)
+
 for a in soup.findAll('li', class_ = "checkbox shortlist"):
     if('\"checked\"' in str(a)):
         if(str(a.find('input', class_ = "checkbox__input").get("data-dimensionlabel")).lower() == 'make'):
@@ -119,5 +127,9 @@ for car in car_name:
         if(model in car):
             models.append(model)
 
-df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,'Transmission':transmissions,'Drivetrain':drivetrains,'Link':url_list})
+
+df = pd.DataFrame({'Car Name':car_name,'Year':years,'Make':makes,'Model':models,\
+'Price':price,'Mileage':miles,'Exterior Color':exterior_color,'Interior Color':interior_color,\
+'Transmission':transmissions,'Drivetrain':drivetrains,'Seller':sellers,'Link':url_list})
+
 df.to_csv('car_data.csv', index=False, encoding='utf-8')
