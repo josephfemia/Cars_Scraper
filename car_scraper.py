@@ -57,11 +57,11 @@ soup = BeautifulSoup(content, 'html.parser')
 for a in soup.findAll('select', {'name' : 'modelId'}):
     for b in a.findAll('option'):
         modellist.append(str(b.text))
-        modellist_title.append(str(b.text).title())
+        modellist_title.append(str(b.text).title().replace("- ",""))
 
 print("The list of models are {}".format(modellist_title))
 user_model = input('Please type a model from the list above:\n').title()
-user_make = modellist[modellist_title.index(user_model)]
+user_model = modellist[modellist_title.index(user_model)]
 model_id = soup.find('option', text = user_model).get('value')
 drpModel = Select(driver.find_element_by_name('modelId'))
 drpModel.select_by_visible_text(user_model)
