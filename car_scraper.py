@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import pandas as pd
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 import time
 
 car_name=[] #List to store car name of the product
@@ -31,7 +32,12 @@ modellist_title=[] #List that stores all possible makes with a title format
 
 year_filter=[] #List that stores all possible years to filter by
 
-driver = webdriver.Chrome(ChromeDriverManager().install()) # diver
+options = Options()
+options.headless = True
+options.add_argument('window-size=1920x1080')
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+driver = webdriver.Chrome(ChromeDriverManager().install(), options = options) # diver
 driver.get('https://www.cars.com')
 time.sleep(1)
 content = driver.page_source
