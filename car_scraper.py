@@ -106,12 +106,14 @@ drpYearMax.select_by_visible_text(user_max_year)
 time.sleep(1)
 content = driver.page_source
 soup = BeautifulSoup(content, 'html.parser')
+max_page = 0
 
 # Used to store the page numbers in a list
 for a in soup.findAll('ul', class_ = "page-list"):
     for b in a.findAll('a'):
-        page = str(b.get('data-page'))
-        pages.append(page)
+        pg_temp = int(b.get('data-page'))
+        if pg_temp > max_page:
+            max_page = pg_temp
 
 
 # Creates the specific yrId portion of the url
@@ -124,8 +126,8 @@ for year in year_filter[year_filter.index(user_min_year):year_filter.index(user_
 
 
 # Scrolls thru all pages and stores the information
-for pg in pages:
-    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&yrId=' + dev_url_year_id + '&zc=80011'
+for pg in range(1, max_page + 1):
+    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + str(pg) + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&yrId=' + dev_url_year_id + '&zc=80011'
     driver.get(dev_url)
 
     content = driver.page_source
