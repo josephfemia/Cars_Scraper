@@ -31,11 +31,12 @@ modellist=[] #List to store all possible models
 modellist_title=[] #List that stores all possible makes with a title format
 
 year_filter=[] #List that stores all possible years to filter by
+year_id_filter=[] #List that stores all possible year id's
 
 options = Options()
-options.headless = True
-options.add_argument('window-size=1920x1080')
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
+# options.headless = True
+# options.add_argument('window-size=1920x1080')
+# options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 driver = webdriver.Chrome(ChromeDriverManager().install(), options = options) # diver
 driver.get('https://www.cars.com')
@@ -89,6 +90,7 @@ for a in soup.findAll('select', {"name" : "yrId"}):
     for b in a.findAll('option'):
         if b.text not in year_filter:
             year_filter.append(str(b.text))
+            year_id_filter.append(str(b.get('value')))
 
 
 print("The list of possible years to filter by are {}".format(year_filter))
@@ -111,9 +113,19 @@ for a in soup.findAll('ul', class_ = "page-list"):
         page = str(b.get('data-page'))
         pages.append(page)
 
+
+# Creates the specific yrId portion of the url
+dev_url_year_id = ""
+for year in year_filter[year_filter.index(user_min_year):year_filter.index(user_max_year) + 1]:
+    if year == user_max_year:
+        dev_url_year_id += str(year_id_filter[year_filter.index(year)])
+    else:
+        dev_url_year_id += str(year_id_filter[year_filter.index(year)]) + "%2C"
+
+
 # Scrolls thru all pages and stores the information
 for pg in pages:
-    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&yrId=' + min_year_id + '%2C' + max_year_id + '&zc=80011'
+    dev_url = 'https://www.cars.com/for-sale/searchresults.action/?mdId=' + model_id + '&mkId=' + make_id + '&page=' + pg + '&perPage=20&rd=99999&searchSource=PAGINATION&sort=relevance&yrId=' + dev_url_year_id + '&zc=80011'
     driver.get(dev_url)
 
     content = driver.page_source
